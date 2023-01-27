@@ -1,6 +1,6 @@
 """! @file lab1.py Motor Driver  """
 import pyb
-import time
+import pyb.Pin as Pin
 
 # yellow (channel A) leads for clockwise
 # Blue (channel B) leads for clockwise
@@ -10,20 +10,19 @@ class MotorDriver:
     This class implements a motor driver for an ME405 kit. 
     """
 
-    def __init__ (self, en_pin, in1pin, in2pin, timer):
+    def __init__ (self, en_pin, in1pin, in2pin, timer_num):
         """! 
         Creates a motor driver by initializing GPIO
         pins and turning off the motor for safety. 
         @param en_pin (There will be several pin parameters)
         """
-        pin1 = pyb.Pin (in1pin, pyb.Pin.OUT_PP)
-        pin2 = pyb.Pin (in2pin, pyb.Pin.OUT_PP)
-        self.pin_en = pyb.Pin (en_pin, pyb.Pin.OUT_OD,pyb.Pin.PULL_UP)
-        timer3 = pyb.Timer (3, freq=65535)
-        timer3 = pyb.Timer (3, freq=65535)
-        self.ch1 = timer3.channel (1, pyb.Timer.PWM, pin=pin1)
-        self.ch2 = timer3.channel (2, pyb.Timer.PWM, pin=pin2)
-        print ("Creating a motor driver")
+        pin1 = Pin(in1pin, Pin.OUT_PP)
+        pin2 = Pin(in2pin, Pin.OUT_PP)
+        timer = pyb.Timer(timer_num, freq=0xFFFF)
+        self.pin_en = Pin(en_pin, Pin.OUT_OD, Pin.PULL_UP)
+        self.ch1 = timer.channel(1, pyb.Timer.PWM, pin=pin1)
+        self.ch2 = timer.channel(2, pyb.Timer.PWM, pin=pin2)
+        print("Creating a motor driver")
         
     def set_duty_cycle (self, level):
         """!
@@ -35,21 +34,16 @@ class MotorDriver:
                cycle of the voltage sent to the motor 
         """
         self.pin_en.value(True)
+
         if(level > 0):
-            self.ch1.pulse_width_percent (0)
-            self.ch2.pulse_width_percent (level)
-            # do something
+            self.ch1.pulse_width_percent(0)
+            self.ch2.pulse_width_percent(level)
         elif(level < 0):
-            self.ch1.pulse_width_percent (level)
-            self.ch2.pulse_width_percent (0)
+            self.ch1.pulse_width_percent(-1 * level)
+            self.ch2.pulse_width_percent(0)
             
         print (f"Setting duty cycle to {level}")
         
 if __name__ == "__main__":
-    moe = MotorDriver (pyb.Pin.board.PA10,pyb.Pin.board.PB4, pyb.Pin.board.PB5, 3)
-    moe.set_duty_cycle (-100)
-        
-        
-        
-        
-        
+    moe = MotorDriver(Pin.board.PA10, Pin.board.PB4, Pin.board.PB5, 3)
+    moe.set_duty_cycle(-100)
