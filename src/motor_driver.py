@@ -1,6 +1,6 @@
 """! @file lab1.py Motor Driver  """
 import pyb
-import pyb.Pin as Pin
+from pyb import Pin as Pin
 
 # yellow (channel A) leads for clockwise
 # Blue (channel B) leads for clockwise
@@ -33,7 +33,7 @@ class MotorDriver:
         @param level A signed integer holding the duty
                cycle of the voltage sent to the motor 
         """
-        self.pin_en.value(True)
+        self.pin_en.value(1)
 
         if(level > 0):
             self.ch1.pulse_width_percent(0)
