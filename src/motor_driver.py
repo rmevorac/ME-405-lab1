@@ -23,19 +23,17 @@ from pyb import Pin as Pin
 
 class MotorDriver:
     """!@brief	 This class implements a motor driver for a generic motor attached to the nucleo and its H bridge shield.
-        @details	This class takes pins put in by the user to set up a motor timer and motor channel. The pins used by this version.
+        @details	This class takes pins put in by the user to set up a motor timer and motor channel. The pins used by this version
                     are PA10, PB4 and PB5 with timer channel 3 for motor 1 and PC1, PA0 and PA1 with timer channel 5 for motor 2 .
     """
 
     def __init__ (self, en_pin, in1pin, in2pin, timer_num):
-    """! 
-    Creates a motor driver by initializing GPIO
-    pins and turning off the motor for safety.
-    @param self		This paramater represents the chosen motor by the user. The user can in this verion only utilize two possible motors.
-    @param en_pin	This pin is reserved for the motor driver pin and handles the connection between the CPU and the H bridge.
-    @param in1pin	This pin along side in2pin handles the direction of the motors spin.
-    @param in2pin	This pin along side in1pin handles the direction of the motors spin.
-    @param in2pin	This paramter is the timer assigned by the user to run the motor. For this version of the driver to work, the pins and timer they represent must match.
+    """!@brief 			Creates a motor driver by initializing GPIOpins and turning off the motor for safety.
+        @param self		This paramater represents the chosen motor by the user. The user can in this verion only utilize two possible motors.
+        @param en_pin	This pin is reserved for the motor driver pin and handles the connection between the CPU and the H bridge.
+        @param in1pin	This pin along side in2pin handles the direction of the motors spin.
+        @param in2pin	This pin along side in1pin handles the direction of the motors spin.
+        @param timer_num	This paramter is the timer assigned by the user to run the motor. For this version of the driver to work, the pins and timer they represent must match.
     """
     
         ##Setting pin1 for the motor controller to the in1pin
