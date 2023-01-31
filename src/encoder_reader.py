@@ -67,22 +67,19 @@ class Encoder:
         
         #if pyb.elapsed_millis(self.real_time) >= 100: ------- old code for debugging
         
-        ##Handles the encoder sampling time. Set to 100 Hz to ensure rapid and accurate readings
-        #
+        #Handles the encoder sampling time. Set to 100 Hz to ensure rapid and accurate readings
         pyb.delay(10)
         ##Gets new encoder value and calculates the delta value to run the filtering for under/over/direction
         #
         new_delta = self.tim.counter()
         delta_1 = new_delta - self.old_delta
 
-        ##Checking for Overflow in the encoder readings and then sub-checking if the direction changed to backwards
-        #
+        #Checking for Overflow in the encoder readings and then sub-checking if the direction changed to backwards
         if delta_1 <= 32768:
             delta_1 += 65536
             if new_delta > self.old_delta: #big drop
                 delta_1 = new_delta - 65536 - self.old_delta
-        ##Checking for Underflow in the encoder readings and then sub-checking if the direction changed to forwards
-        #
+        #Checking for Underflow in the encoder readings and then sub-checking if the direction changed to forwards
         if delta_1 >= -32768:
             delta_1 -= 65536
             if new_delta < self.old_delta: #jump

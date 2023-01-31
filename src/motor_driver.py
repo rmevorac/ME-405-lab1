@@ -1,6 +1,6 @@
 """	!@file		motor_driver.py
     @brief		This class handles the pwm input from the user to each specific motor.
-                This class specifically sets up the timers and channels for the motors
+                This class specifically sets up the timers and channels for the motors.
     
     @author		Ben Elkayam
     @author		Roey Mevorach
@@ -59,21 +59,17 @@ class MotorDriver:
         @param	self	This paramater represents the chosen motor by the user. The user can in this verion only utilize two possible motors.
         @param	level	A signed integer holding the duty cycle of the voltage sent to the motor
         """
-        ##Setting the ENx pin to high in order to activate the motor
-        #    
+        #Setting the ENx pin to high in order to activate the motor
         self.pin_en.value(1)
-        ##Parsing user input for the PWM duty cycle for a positive spin
-        #
+        #Parsing user input for the PWM duty cycle for a positive spin
         if level < 0:
             self.ch1.pulse_width_percent(-1 * level)
             self.ch2.pulse_width_percent(0)
-        ##Parsing user input for the PWM duty cycle for a negative spin
-        #
+        #Parsing user input for the PWM duty cycle for a negative spin
         elif level > 0:
             self.ch1.pulse_width_percent(0)
             self.ch2.pulse_width_percent(level)
-        ##Parsing user input for the PWM duty cycle for a 0 input pwm signal
-        #
+        #Parsing user input for the PWM duty cycle for a 0 input pwm signal
         else:
             self.ch1.pulse_width_percent(0)
             self.ch2.pulse_width_percent(0)
