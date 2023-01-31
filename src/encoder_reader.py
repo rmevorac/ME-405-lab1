@@ -1,6 +1,7 @@
 import pyb
 from pyb import Pin as Pin
-import motor_driver.py
+
+
 class Encoder:
     """! 
     This class implements a motor driver for an ME405 kit. 
@@ -52,6 +53,9 @@ class Encoder:
                 delta_1 = new_delta - 65536 - self.old_delta
         self.old_delta = new_delta
         self.position += delta_1
+    
+    def zero(self):
+        self.position = 0
 
 if __name__ == "__main__":
     encIn1 = Encoder(Pin.board.PB6, Pin.board.PB7, 4)
@@ -66,5 +70,9 @@ if __name__ == "__main__":
             encIn2.read()
             print(f"In1: {encIn1.position}")
             print(f"In2: {encIn2.position}")
+            if encIn1.position > 10000:
+                encIn1.zero()
+            if encIn2.position > 10000:
+                encIn2.zero()
 
             real_time = pyb.millis()
