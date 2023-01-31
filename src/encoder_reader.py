@@ -19,59 +19,28 @@ class Encoder:
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=self.enc_chB)
         self.position = 0
         self.old_delta = 0
-        self.dir = 1            #1 = forward, 0 = backward
+        self.real_time = pyb.millis()
         print ("Creating Encoder")
 
-
-    def get_pos(self):
-        """!
-        This method sets the duty cycle to be sent
-        to the motor to the given level. Positive values
-        cause torque in one direction, negative values
-        in the opposite direction.
-        @param level A signed integer holding the duty
-               cycle of the voltage sent to the motor 
-        """
-        #print (f"Setting duty cycle to {level}")
-        return self.tim.counter()
-        
         
     def read(self):
-        new_delta = self.get_pos()
+        #if pyb.elapsed_millis(self.real_time) >= 100:
+        pyb.delay(10)
+        new_delta = self.tim.counter()
         delta_1 = new_delta - self.old_delta
 
-        if delta_1 >= 32768:
-            delta_1 -= 65536
-            self.dir_flag = 0
-            if new_delta < self.old_delta and self.dir_flag: #big drop
-                delta_1 = new_delta + 65536 - self.old_delta
-        if delta_1 <= -32768:
+        if delta_1 <= 32768:
             delta_1 += 65536
-            self.dir_flag = 1
-            if new_delta > self.old_delta and not self.dir_flag: #jump
+            if new_delta > self.old_delta: #big drop
                 delta_1 = new_delta - 65536 - self.old_delta
+        if delta_1 >= -32768:
+            delta_1 -= 65536
+            if new_delta < self.old_delta: #jump
+                delta_1 = new_delta + 65536 - self.old_delta
+                
         self.old_delta = new_delta
         self.position += delta_1
+        self.real_time = pyb.millis()
     
     def zero(self):
         self.position = 0
-
-if __name__ == "__main__":
-    encIn1 = Encoder(Pin.board.PB6, Pin.board.PB7, 4)
-    encIn2 = Encoder(Pin.board.PC6, Pin.board.PC7, 8)
-    real_time = pyb.millis()
-    encIn1.dir_flag = 1 #depend on PWM input 1 = forward, 0 = backward
-    encIn2.dir_flag = 1
-    
-    while(True):
-        if pyb.elapsed_millis(real_time) >= 100:
-            encIn1.read()
-            encIn2.read()
-            print(f"In1: {encIn1.position}")
-            print(f"In2: {encIn2.position}")
-            if encIn1.position > 10000:
-                encIn1.zero()
-            if encIn2.position > 10000:
-                encIn2.zero()
-
-            real_time = pyb.millis()
