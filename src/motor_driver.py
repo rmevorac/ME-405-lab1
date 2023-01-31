@@ -2,6 +2,7 @@
 import pyb
 from pyb import Pin as Pin
 
+
 # yellow (channel A) leads for clockwise
 # Blue (channel B) leads for clockwise
 
@@ -46,4 +47,11 @@ class MotorDriver:
         
 if __name__ == "__main__":
     moe = MotorDriver(Pin.board.PA10, Pin.board.PB4, Pin.board.PB5, 3)
+    moe2 = MotorDriver(Pin.board.PC1, Pin.board.PA0, Pin.board.PA1, 5)
+    moe2.set_duty_cycle(100)
     moe.set_duty_cycle(-100)
+        
+        
+        
+        
+        
