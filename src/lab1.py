@@ -1,49 +1,27 @@
 import pyb
+import encoder_reader, motor_driver
 
+if __name__ == "__main__":
+    moe = MotorDriver(Pin.board.PA10, Pin.board.PB4, Pin.board.PB5, 3)
+    moe2 = MotorDriver(Pin.board.PC1, Pin.board.PA0, Pin.board.PA1, 5)
+    moe.set_duty_cycle(-100)
+    moe2.set_duty_cycle(100)
 
-pinb6 = pyb.Pin(pyb.Pin.board.PB6, pyb.Pin.IN)
-pinb7 = pyb.Pin(pyb.Pin.board.PB7, pyb.Pin.IN)
-
-timer_4 = pyb.Timer(4, prescaler=0, period=0xFFFF)
-
-enc_channel_B1 = timer_4.channel(1, pyb.Timer.ENC_AB, pin = pinb6)
-
-enc_channel_B2 = timer_4.channel(2, pyb.Timer.ENC_AB, pin = pinb7)
-
-
-
-
-pinc6 = pyb.Pin(pyb.Pin.board.PC6, pyb.Pin.IN)
-pinc7 = pyb.Pin(pyb.Pin.board.PC7, pyb.Pin.IN)
-
-timer_8 = pyb.Timer(8, prescaler=0, period=0xFFFF)
-
-enc_channel_C1 = timer_8.channel(1, pyb.Timer.ENC_AB, pin = pinc6)
-
-enc_channel_C2 = timer_8.channel(2, pyb.Timer.ENC_AB, pin = pinc7)
-
-
-ena = pyb.Pin(pyb.Pin.board.PA10, pyb.Pin.OD, pyb.pin.PULL_UP)
-ena = pyb.Pin(pyb.Pin.board.PC1, pyb.Pin.OD, pyb.pin.PULL_UP)
-
-in1a = pyb.Pin(pyb.Pin.board.PB4, pyb.Pin.PP)
-in2a = pyb.Pin(pyb.Pin.board.PB5, pyb.Pin.PP)
-in1b = pyb.Pin(pyb.Pin.board.PA0, pyb.Pin.PP)
-in2b = pyb.Pin(pyb.Pin.board.PA1, pyb.Pin.PP)
-
-timer_3 = pyb.Timer(3, prescaler=0, period=0xFFFF)
-
-enc_channel_PB1 = timer_3.channel(1, pyb.Timer.ENC_AB, pin = in1a)
-enc_channel_PB2 = timer_3.channel(2, pyb.Timer.ENC_AB, pin = in2a)
-
-timer_5 = pyb.Timer(5, prescaler=0, period=0xFFFF)
-
-enc_channel_PA1 = timer_5.channel(1, pyb.Timer.ENC_AB, pin = in1b)
-enc_channel_PA2 = timer_5.channel(2, pyb.Timer.ENC_AB, pin = in2b)
-
-
-
-
-
-
+    encIn1 = Encoder(Pin.board.PB6, Pin.board.PB7, 4)
+    encIn2 = Encoder(Pin.board.PC6, Pin.board.PC7, 8)
+    real_time = pyb.millis()
+    encIn1.dir_flag = 0 #depend on PWM input 1 = forward, 0 = backward
+    encIn2.dir_flag = 1
     
+    while(True):
+        if pyb.elapsed_millis(real_time) >= 100:
+            encIn1.read()
+            encIn2.read()
+            print(f"In1: {encIn1.position}")
+            print(f"In2: {encIn2.position}")
+            if encIn1.position > 10000:
+                encIn1.zero()
+            if encIn2.position > 10000:
+                encIn2.zero()
+
+            real_time = pyb.millis()

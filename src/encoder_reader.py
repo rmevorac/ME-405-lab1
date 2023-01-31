@@ -1,7 +1,6 @@
 import pyb
 from pyb import Pin as Pin
 
-
 class Encoder:
     """! 
     This class implements a motor driver for an ME405 kit. 
@@ -20,7 +19,7 @@ class Encoder:
         self.ch2 = self.tim.channel(2, pyb.Timer.ENC_AB, pin=self.enc_chB)
         self.position = 0
         self.old_delta = 0
-        self.dir = 0 #need to set using PWM 
+        self.dir = 1            #1 = forward, 0 = backward
         print ("Creating Encoder")
 
 
@@ -41,12 +40,12 @@ class Encoder:
         new_delta = self.get_pos()
         delta_1 = new_delta - self.old_delta
 
-        if delta_1 >= 32768: #changes to backwards
+        if delta_1 >= 32768:
             delta_1 -= 65536
             self.dir_flag = 0
             if new_delta < self.old_delta and self.dir_flag: #big drop
                 delta_1 = new_delta + 65536 - self.old_delta
-        if delta_1 <= -32768: #changes to forwards
+        if delta_1 <= -32768:
             delta_1 += 65536
             self.dir_flag = 1
             if new_delta > self.old_delta and not self.dir_flag: #jump
